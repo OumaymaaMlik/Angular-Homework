@@ -1,0 +1,12 @@
+<form [formGroup]="userForm">
+
+<label>Email</label>
+<input formControleName = "email">
+
+<label>City</label>
+<input formControleName = "city">
+<button type="submit" (ngSubmit)="addUser()">Submit</button>
+
+
+</form>
+

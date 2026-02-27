@@ -1,0 +1,86 @@
+/* Conteneur principal du formulaire */
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 20px;
+  background-color: #f8f9fa; /* Fond gris très clair comme sur la figure 1 */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Groupe de champs */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #444;
+}
+
+/* Styles des inputs, textarea et select */
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Évite que le padding n'élargisse l'input */
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Champ en lecture seule (readonly) */
+.readonly-field {
+  background-color: #e9ecef; /* Gris plus foncé pour indiquer le blocage */
+  cursor: not-allowed;
+  color: #495057;
+}
+
+/* Zone de texte (Description) */
+textarea.form-control {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Messages d'erreur */
+.error {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.error small {
+  display: block;
+}
+
+/* Bouton Soumettre */
+.btn-submit {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+/* État désactivé du bouton si le formulaire est INVALID */
+.btn-submit:disabled {
+  background-color: #a5caff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

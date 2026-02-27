@@ -1,0 +1,26 @@
+(/* Cute pink footer styling */)
+.footer {
+	padding: 22px 18px;
+	text-align: center;
+	background: linear-gradient(90deg, #ffb3d1 0%, #ffd6e8 100%);
+	color: #6a0b33;
+	border-top: 2px solid rgba(255,255,255,0.35);
+	box-shadow: 0 -6px 18px rgba(255,182,193,0.08);
+	font-family: 'Poppins', 'Merienda', sans-serif;
+}
+
+.footer small {
+	display: block;
+	opacity: 0.9;
+}
+
+.footer .made-with {
+	margin-top: 8px;
+	color: #8a0f46;
+}
+
+.footer .made-with::before {
+	content: '❤ ';
+	color: #ff6fa3;
+}
+

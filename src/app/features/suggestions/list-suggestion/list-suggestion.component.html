@@ -1,0 +1,64 @@
+<div class="container">
+  <h2>Liste des Suggestions</h2>
+
+  <table class="suggestion-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Titre</th>
+        <th>Description</th>
+        <th>Catégorie</th>
+        <th>Date</th>
+        <th>Statut</th>
+        <th>Likes</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let suggestion of suggestions">
+        <td>{{ suggestion.id }}</td>
+        <td>{{ suggestion.title }}</td>
+        <td>{{ suggestion.description }}</td>
+        <td>{{ suggestion.category }}</td>
+        <td>{{ suggestion.date | date:'dd/MM/yyyy' }}</td>
+        <td>
+          <span 
+            [ngClass]="{
+              'status-acceptee': suggestion.status === 'acceptee',
+              'status-refusee': suggestion.status === 'refusee',
+              'status-en-attente': suggestion.status === 'en_attente'
+            }">
+            {{ suggestion.status }}
+          </span>
+        </td>
+        <td>{{ suggestion.nbLikes }}</td>
+        <td>
+          <button [routerLink]="['/suggestions', suggestion.id]" class="btn-details">
+            👁️ Détails
+          </button>
+
+          <ng-container *ngIf="suggestion.status !== 'refusee'">
+            <button (click)="addLike(suggestion)">
+              👍 Like
+            </button>
+            <button (click)="addToFavorites(suggestion)">
+              ⭐ Favoris
+            </button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="favorites.length > 0" class="favorites">
+    <h3>Mes Favoris</h3>
+    <ul>
+      <li *ngFor="let fav of favorites">
+        {{ fav.title }} ({{ fav.status }})
+      </li>
+    </ul>
+  </div>
+  <button routerLink="/suggestions/add" class="btn-add">
+  + Ajouter une suggestion
+</button>
+</div>
