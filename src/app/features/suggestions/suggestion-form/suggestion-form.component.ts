@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SuggestionService } from '../../../suggestion.service';
+import { Suggestion } from '../../../models/suggestion';
 
 
 @Component({
@@ -21,7 +23,8 @@ export class SuggestionFormComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private suggestionService: SuggestionService
   ) {}
 
   ngOnInit(): void {
@@ -43,15 +46,22 @@ export class SuggestionFormComponent {
 
   onSubmit() {
     if (this.suggestionForm.valid) {
-      const newSuggestion = {
+      const newSuggestion: Suggestion = {
         ...this.suggestionForm.value,
         id: Math.floor(Math.random() * 1000), 
         nbLikes: 0, 
         date: new Date() 
       };
       
-      console.log('Suggestion ajoutée:', newSuggestion);
-      this.router.navigate(['/suggestions']); 
+      this.suggestionService.addSuggestion(newSuggestion).subscribe({
+        next: (created) => {
+          console.log('Suggestion ajoutée:', created);
+          this.router.navigate(['/suggestions']);
+        },
+        error: (err) => {
+          console.error('Erreur lors de l\'ajout:', err);
+        }
+      });
     }
   }
 

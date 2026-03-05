@@ -11,6 +11,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { NavComponent } from './nav/nav.component';
 import { UserFormComponent } from './user-form/user-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   providers: [
-    provideClientHydration()
+    //provideClientHydration(),
+    provideHttpClient()
   ],
   bootstrap: [AppComponent]
 })

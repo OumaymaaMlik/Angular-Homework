@@ -1,64 +1,89 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Suggestion } from '../../../models/suggestion';
+import { SuggestionService } from '../../../suggestion.service';
 
 @Component({
   selector: 'app-list-suggestion',
   templateUrl: './list-suggestion.component.html',
-  styleUrl: './list-suggestion.component.css'
+  styleUrls: ['./list-suggestion.component.css']
 })
-export class ListSuggestionComponent {
+export class ListSuggestionComponent implements OnInit {
 
-  suggestions: Suggestion[] = [
-  {
-    id: 1,
-    title: 'Organiser une journée team building',
-    description: "Suggestion pour organiser une journée de team building pour renforcer les liens entre les membres de l'équipe.",
-    category: 'Événements',
-    date: new Date('2025-01-20'),
-    status: 'acceptee',
-    nbLikes: 10
-  },
-  {
-    id: 2,
-    title: 'Améliorer le système de réservation',
-    description: "Proposition pour améliorer la gestion des réservations en ligne avec un système de confirmation automatique.",
-    category: 'Technologie',
-    date: new Date('2025-01-15'),
-    status: 'refusee',
-    nbLikes: 0
-  },
-  {
-    id: 3,
-    title: 'Créer un système de récompenses',
-    description: "Mise en place d'un programme de récompenses pour motiver les employés et reconnaître leurs efforts.",
-    category: 'Ressources Humaines',
-    date: new Date('2025-01-25'),
-    status: 'refusee',
-    nbLikes: 0
-  },
-  {
-    id: 4,
-    title: "Moderniser l'interface utilisateur",
-    description: "Refonte complète de l'interface utilisateur pour une meilleure expérience utilisateur.",
-    category: 'Technologie',
-    date: new Date('2025-01-30'),
-    status: 'en_attente',
-    nbLikes: 0
-  }
-];
+  suggestions: Suggestion[] = [];
+  favorites: Suggestion[] = [];
 
-favorites: Suggestion[] = [];
+  loading = false;
+  errorMsg = '';
 
-  addLike(suggestion: Suggestion) {
-    suggestion.nbLikes += 1;
+  constructor(private suggestionService: SuggestionService) {}
+
+  ngOnInit(): void {
+    this.loadSuggestions();
   }
 
-  addToFavorites(suggestion: Suggestion) {
-    const exists = this.favorites.find(fav => fav.id === suggestion.id);
+  private loadSuggestions(): void {
+    this.loading = true;
+    this.errorMsg = '';
+
+    this.suggestionService.GetAllSUGGESTION().subscribe({
+      next: (data) => {
+        this.suggestions = data ?? [];
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement suggestions:', err);
+        this.errorMsg = "Impossible de charger les suggestions.";
+        this.loading = false;
+      }
+    });
+  }
+
+  addLike(suggestion: Suggestion): void {
+    const oldLikes = suggestion.nbLikes ?? 0;
+    suggestion.nbLikes = oldLikes + 1;
+
+    this.suggestionService.updateSuggestion(suggestion).subscribe({
+      next: (updated) => {
+        if (updated) {
+          const idx = this.suggestions.findIndex(s => s.id === updated.id);
+          if (idx !== -1) this.suggestions[idx] = updated;
+        }
+      },
+      error: (err) => {
+        console.error('Erreur update like:', err);
+        suggestion.nbLikes = oldLikes; // rollback
+        this.errorMsg = "Le Like n'a pas été enregistré (API indisponible ?).";
+      }
+    });
+  }
+
+  addToFavorites(suggestion: Suggestion): void {
+    const exists = this.favorites.some(fav => fav.id === suggestion.id);
     if (!exists) {
       this.favorites.push(suggestion);
     }
   }
 
+  deleteSuggestion(suggestion: Suggestion): void {
+    if (!suggestion?.id) return;
 
+    const ok = confirm(`Supprimer la suggestion "${suggestion.title}" ?`);
+    if (!ok) return;
+
+    this.errorMsg = '';
+
+    this.suggestionService.deleteSuggestion(suggestion.id).subscribe({
+      next: () => {
+        // retirer de la liste
+        this.suggestions = this.suggestions.filter(s => s.id !== suggestion.id);
+
+        // retirer aussi des favoris
+        this.favorites = this.favorites.filter(f => f.id !== suggestion.id);
+      },
+      error: (err) => {
+        console.error('Erreur suppression suggestion:', err);
+        this.errorMsg = "La suppression n'a pas réussi (API indisponible ?).";
+      }
+    });
+  }
 }

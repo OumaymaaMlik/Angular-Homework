@@ -22,7 +22,7 @@
         <td>{{ suggestion.category }}</td>
         <td>{{ suggestion.date | date:'dd/MM/yyyy' }}</td>
         <td>
-          <span 
+          <span
             [ngClass]="{
               'status-acceptee': suggestion.status === 'acceptee',
               'status-refusee': suggestion.status === 'refusee',
@@ -45,6 +45,12 @@
               ⭐ Favoris
             </button>
           </ng-container>
+
+          <!-- Bouton delete -->
+          <button (click)="deleteSuggestion(suggestion)">
+            🗑️ Supprimer
+          </button>
+
         </td>
       </tr>
     </tbody>
@@ -58,7 +64,8 @@
       </li>
     </ul>
   </div>
+
   <button routerLink="/suggestions/add" class="btn-add">
-  + Ajouter une suggestion
-</button>
+    + Ajouter une suggestion
+  </button>
 </div>
